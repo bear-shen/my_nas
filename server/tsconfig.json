@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "module": "NodeNext",
+    "target": "ESNext",
+    "noImplicitAny": true,
+    "removeComments": false,
+    "preserveConstEnums": true,
+    "sourceMap": true,
+    "outDir": "dst/",
+	"allowSyntheticDefaultImports": true
+  },
+  "include": ["*", "**/*",],
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts",
+    "zzz",
+    "zzz/*",
+    "**/zzz/*",
+    "archive",
+    "archive/*",
+    "archive/**/*"
+  ]
+}

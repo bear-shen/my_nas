@@ -1,0 +1,95 @@
+@use "sass:color";
+
+//
+$fontSize: 16px;
+//
+$headerHeight: 25px;
+$footerHeight: 30px;
+$headerPad: 0px;
+$footerPad: 7.5px;
+//
+$navWidth: $fontSize*2.5;
+$navFoldWidth: $fontSize*2.5;
+//
+$narrowWidth: 1440px; //这个是针对文件列表这种特大号的列表重排版的
+$tabletWidth: 1024px;
+$mobileWidth: 600px;
+//
+$indexFrame: 10;
+$indexContent: 100;
+$indexModal: 1000;
+//
+$layoutIndex: 500;
+$alphaIndex: 1000;
+$hinterIndex: 250;
+@mixin fillAvailable($type) {
+  #{$type}: fill-available;
+  #{$type}: -webkit-fill-available;
+  #{$type}: -moz-available;
+}
+@mixin multiLineWrap($lines) {
+  display: -webkit-box;
+  -webkit-line-clamp: $lines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+@mixin blurBackground {
+  &:before {
+    z-index: -1;
+    filter: blur($fontSize * 0.05);
+    backdrop-filter: blur($fontSize * 0.05);
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+  }
+}
+@mixin fontSizeWithLineHeight($fontSize: $fontSize, $rate: 1) {
+  font-size: $fontSize;
+  line-height: $fontSize*$rate;
+}
+//$colorDef_bk: rgba(25, 49, 52, 1);
+//$colorDef_font: rgb(210, 200, 165);
+$colorDef_bk: hsla(210, 10%, 20%, 1);
+$colorDef_font: rgb(197, 197, 197);
+$colorDef_button: hsla(210, 20%, 10%, 1);
+$colorDef_positive: hsla(0, 0%, 60%, 1);
+$colorDef_negative: hsla(0, 0%, 40%, 1);
+$colors: (
+  //内容背景
+        bk:$colorDef_bk,
+        bk_active:color.adjust($colorDef_bk, $lightness: 8%),
+  //上标题栏
+        bar_horizon:color.adjust($colorDef_bk, $lightness: -16%),
+        bar_horizon_active:color.adjust($colorDef_bk, $lightness: -12%),
+  //侧标题栏
+        bar_vertical:color.adjust($colorDef_bk, $lightness: -12%),
+        bar_vertical_active:color.adjust($colorDef_bk, $lightness: -8%),
+  //内容标题栏
+        bar_meta:color.adjust($colorDef_bk, $lightness: -8%),
+        bar_meta_active:color.adjust($colorDef_bk, $lightness: -0%),
+  //弹窗标题栏
+  //弹窗背景
+  //弹窗背景 高亮
+        popup_title:color.adjust($colorDef_bk, $lightness: -12%),
+        popup:color.adjust($colorDef_bk, $lightness: -6%, $alpha: -0.5),
+        popup_active:color.adjust($colorDef_bk, $lightness: -12%, $alpha: -0.25),
+        context:color.adjust($colorDef_bk, $lightness: -6%, $alpha: -0.25),
+        context_active:color.adjust($colorDef_bk, $lightness: 6%, $alpha: -0.25),
+  //按钮背景
+  //按钮 选择
+  //按钮 非选择
+        button:$colorDef_button,
+        button_active:color.adjust($colorDef_button, $lightness: 12%),
+        positive:$colorDef_positive,
+        negative:$colorDef_negative,
+  //文字
+  //文字 高亮
+        font:$colorDef_font,
+        font_active:color.adjust($colorDef_font, $lightness: 6%),
+  //副文字
+  //副文字 高亮
+        font_sub:color.adjust($colorDef_font, $lightness: -30%),
+        font_sub_active:color.adjust($colorDef_font, $lightness: -15%),
+);

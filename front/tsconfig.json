@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+	"module"   : "NodeNext",
+	"composite": true,
+	"noEmit"   : true
+  },
+  "files"          : [
+  ],
+  "include"        : [
+  ],
+  "exclude"        : [
+  ],
+  "references"     : [
+	{
+	  "path": "./tsconfig.node.json"
+	}, {
+	  "path": "./tsconfig.app.json"
+	}
+  ]
+}
