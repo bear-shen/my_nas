@@ -1,17 +1,21 @@
 #!/bin/bash
 
-#service postgresql restart
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+service postgresql restart
 
 cd /myNas/server
 
-/usr/bin/npm run init
+npm run init
 
 sleep 1
-nohup /usr/bin/npm run serve 1>>/myNas/log/server_verbose.log 2>>/myNas/log/server_err.log &
+nohup npm run serve 1>>/myNas/log/server_verbose.log 2>>/myNas/log/server_err.log &
 sleep 5
-nohup /usr/bin/npm run job 1>>/myNas/log/server_verbose.log 2>>/myNas/log/server_err.log &
+nohup npm run job 1>>/myNas/log/server_verbose.log 2>>/myNas/log/server_err.log &
 sleep 5
-nohup /usr/bin/npm run watcher 1>>/myNas/log/server_verbose.log 2>>/myNas/log/server_err.log &
+nohup npm run watcher 1>>/myNas/log/server_verbose.log 2>>/myNas/log/server_err.log &
 sleep 5
 
 service nginx restart
