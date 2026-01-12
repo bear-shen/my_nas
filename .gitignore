@@ -39,7 +39,6 @@ dev_*
 
 dst
 server_archive
-/resource/
 /file
 /file/*
 /doc.md
