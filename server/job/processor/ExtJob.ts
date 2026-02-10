@@ -83,7 +83,7 @@ class ExtJob {
 
 function sendRequest(url: string, post: string, options: RequestOptions) {
     let isHttps = url.indexOf('https:') === 0;
-    let body = new Buffer('');
+    let body = Buffer.from('');
     return new Promise(async resolve => {
         let lib = isHttps ? https : http;
         const req = lib.request(url, options, (res) => {

@@ -46,4 +46,6 @@ server_archive
 /share/archive
 /server/config.toml
 /front/public/pdfjs
-/front/dist/pdfjs
+/front/dist
+pkg
+
