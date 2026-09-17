@@ -36,9 +36,9 @@ require_once 'DBException.php';
 class DBPG {
     use FuncCallable;
 
-    /** @var $dsn PDO */
+    /** @var PDO $pdo */
     public static $pdo = null;
-    /** @var $dsn string */
+    /** @var string $dsn  */
     public static $dsn       = '';
     public static $logging   = false;
     public static $log       = [];
