@@ -41,7 +41,7 @@ in docker, use env:
 
 -- --
 
-![sample](/resource/readme/img.png)
+![sample](/extra/readme/img.png)
 
 # keymaps
 
