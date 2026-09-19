@@ -1,0 +1,22 @@
+name: my_nas_compose
+
+services:
+  my_nas_compose:
+    image: 0xee/my_docker_aio:latest
+    container_name: my_nas_docker
+    ports:
+      - "{{WEBSITE_PORT}}:80"
+      - "{{DB_PORT}}:5432"
+    volumes:
+      - ./nginx:/etc/nginx
+      - {{APP_DIR}}:/myNas
+      - ./postgresql:/etc/postgresql/16/main
+      - ./php:/etc/php/8.3
+      - ./supervisor:/etc/supervisor
+      - ./crontab:/etc/cron.d
+      - ./start_service.sh:/myDocker/start_service.sh
+    command: ["/bin/bash", "/myDocker/start_service.sh"]
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: {{POSTGRES_PASSWORD}}
+      ONLYOFFICE_JWT_SECRET: {{ONLYOFFICE_JWT_SECRET}}
