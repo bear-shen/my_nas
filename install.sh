@@ -27,9 +27,11 @@ INTEGRATE_ONLYOFFICE=${INTEGRATE_ONLYOFFICE:-n}
 INTEGRATE_ONLYOFFICE=$(echo "$INTEGRATE_ONLYOFFICE" | tr '[:upper:]' '[:lower:]')
 
 # 如果配置了集成OnlyOffice，则需要配置JWT密钥
+ONLYOFFICE_ENABLED="false"
 ONLYOFFICE_URL="http://127.0.0.1:8080"
 ONLYOFFICE_JWT_SECRET=""
 if [[ "$INTEGRATE_ONLYOFFICE" == "y" ]]; then
+  ONLYOFFICE_ENABLED="true"
   read -rp "please input OnlyOffice URL (default http://127.0.0.1:8080): " ONLYOFFICE_URL
   ONLYOFFICE_URL=${ONLYOFFICE_URL:-http://127.0.0.1:8080}
   read -rp "please input OnlyOffice JWT secret (default mysecret): " ONLYOFFICE_JWT_SECRET
@@ -65,6 +67,8 @@ POSTGRES_PASSWORD_ESCAPED="$(escape_sed_replacement "$POSTGRES_PASSWORD")"
 ONLYOFFICE_JWT_SECRET_ESCAPED="$(escape_sed_replacement "$ONLYOFFICE_JWT_SECRET")"
 ONLYOFFICE_URL_ESCAPED="$(escape_sed_replacement "$ONLYOFFICE_URL")"
 
+echo "===================="
+echo "deploy config files"
 # 创建 compose_build 目录并克隆 my_docker_aio 仓库
 # 如果已经存在，跳过
 if [ ! -d "$APP_DIR/compose_build" ]; then
@@ -74,78 +78,43 @@ fi
 
 # 复制模板文件到 compose_build 目录
 # docker-compose.yaml template
-cp -r -f "$APP_DIR/compose_config_template/docker-compose.yaml" "$APP_DIR/compose_build/docker-compose.yaml"
+cp -r -f "$APP_DIR/compose_config_template/docker-compose.yaml" "$APP_DIR/compose_build/compose/docker-compose.yaml"
 sed -i \
   -e "s|{{APP_DIR}}|$APP_DIR_ESCAPED|g" \
   -e "s|{{WEBSITE_PORT}}|$WEBSITE_PORT_ESCAPED|g" \
   -e "s|{{DB_PORT}}|$DB_PORT_ESCAPED|g" \
   -e "s|{{POSTGRES_PASSWORD}}|$POSTGRES_PASSWORD_ESCAPED|g" \
   -e "s|{{ONLYOFFICE_JWT_SECRET}}|$ONLYOFFICE_JWT_SECRET_ESCAPED|g" \
-  "$APP_DIR/compose_build/docker-compose.yaml"
+  -e "s|{{ONLYOFFICE_ENABLED}}|$ONLYOFFICE_ENABLED|g" \
+  "$APP_DIR/compose_build/compose/docker-compose.yaml"
 
 # nginx template
-mkdir -p "$APP_DIR/compose_build/nginx/sites-available"
-cp -r -f "$APP_DIR/compose_config_template/nginx/sites-available/default.conf" "$APP_DIR/compose_build/nginx/sites-available/default.conf"
+mkdir -p "$APP_DIR/compose_build/compose/nginx/sites-available"
+cp -r -f "$APP_DIR/compose_config_template/nginx/sites-available/default.conf" "$APP_DIR/compose_build/compose/nginx/sites-available/default.conf"
 sed -i -e "s|{{ONLYOFFICE_URL}}|$ONLYOFFICE_URL_ESCAPED|g" \
-  "$APP_DIR/compose_build/nginx/sites-available/default.conf"
+  "$APP_DIR/compose_build/compose/nginx/sites-available/default.conf"
 
 # supervisor template
-mkdir -p "$APP_DIR/compose_build/supervisor/conf.d"
-cp -r -f "$APP_DIR/compose_config_template/supervisor/conf.d/node.conf" "$APP_DIR/compose_build/supervisor/conf.d/node.conf"
+mkdir -p "$APP_DIR/compose_build/compose/supervisor/conf.d"
+cp -r -f "$APP_DIR/compose_config_template/supervisor/conf.d/node.conf" "$APP_DIR/compose_build/compose/supervisor/conf.d/node.conf"
 sed -i -e "s|{{APP_DIR}}|$APP_DIR_ESCAPED|g" \
-  "$APP_DIR/compose_build/supervisor/conf.d/node.conf"
+  "$APP_DIR/compose_build/compose/supervisor/conf.d/node.conf"
+
+# config.toml template
+cp -r -f "$APP_DIR/config.template.toml" "$APP_DIR/config.toml"
+sed -i \
+  -e "s|{{POSTGRES_PASSWORD}}|$POSTGRES_PASSWORD_ESCAPED|g" \
+  -e "s|{{ONLYOFFICE_JWT_SECRET}}|$ONLYOFFICE_JWT_SECRET_ESCAPED|g" \
+  -e "s|{{ONLYOFFICE_ENABLED}}|$ONLYOFFICE_ENABLED|g" \
+  "$APP_DIR/config.toml"
+
+cp -f "$APP_DIR/compose_config_template/start.sh" "$APP_DIR/compose_build/compose/start.sh"
+cp -f "$APP_DIR/compose_config_template/init.sh" "$APP_DIR/compose_build/compose/init.sh"
+
+echo "===================="
+echo "building docker compose"
+cd "$APP_DIR/compose_build/compose"
+docker compose up -d
+echo "docker compose complete"
 
 
-# read -rsp "please input password: " PASSWORD
-# echo
-# read -rp "please input docker compose project directory (default ./my_docker_aio): " TARGET_DIR
-# TARGET_DIR=${TARGET_DIR:-"$APP_DIR/my_docker_aio"}
-
-# if [ ! -d "$TARGET_DIR" ]; then
-#   echo "downloading my_docker_aio..."
-#   git clone https://github.com/bear-shen/my_docker_aio.git "$TARGET_DIR"
-# else
-#   echo "detected existing directory: $TARGET_DIR"
-# fi
-
-# cat > "$CONFIG_FILE" <<EOF
-# WEBSITE_PORT=$WEBSITE_PORT
-# DB_PORT=$DB_PORT
-# PASSWORD=$PASSWORD
-# TARGET_DIR=$TARGET_DIR
-# EOF
-
-# echo "configuration has been written to $CONFIG_FILE"
-
-# cd "$TARGET_DIR"
-# docker compose up -d
-# echo "installation complete"
-
-
-# #!/usr/bin/env bash
-# set -euo pipefail
-
-# APP_DIR="$(cd "$(dirname "$0")" && pwd)"
-# CONFIG_FILE="$APP_DIR/.env"
-
-# DEFAULT_HOSTNAME="mynas.local"
-
-# echo "== my_nas installer =="
-# read -rp "请输入 hostname [$DEFAULT_HOSTNAME]: " HOSTNAME
-# HOSTNAME="${HOSTNAME:-$DEFAULT_HOSTNAME}"
-
-# read -rsp "请输入 password: " PASSWORD
-# echo
-
-# echo "配置如下："
-# echo "HOSTNAME=$HOSTNAME"
-
-# cat > "$CONFIG_FILE" <<EOF
-# HOSTNAME=$HOSTNAME
-# PASSWORD=$PASSWORD
-# EOF
-
-# chmod 600 "$CONFIG_FILE"
-
-# echo "配置已写入 $CONFIG_FILE"
-# echo "安装完成。"
