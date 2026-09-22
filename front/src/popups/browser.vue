@@ -199,6 +199,7 @@ const domProps: Ref<{
 
 async function getParentDir(pid: number | string): Promise<api_file_list_resp> {
   const res = await query<api_file_list_resp>("file/get", {
+    mode: 'directory',
     node_type: 'directory',
     id_dir: `${pid}`,
     with: 'none',

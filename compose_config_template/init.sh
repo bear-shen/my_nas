@@ -83,3 +83,4 @@ export NVM_DIR="$HOME/.nvm"
 
 cd "/myNas/server"
 npm install
+npm run build

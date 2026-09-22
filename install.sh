@@ -112,6 +112,10 @@ sed -i \
 
 cp -f "$APP_DIR/compose_config_template/start.sh" "$APP_DIR/compose_build/compose/start.sh"
 cp -f "$APP_DIR/compose_config_template/init.sh" "$APP_DIR/compose_build/compose/init.sh"
+cp -f "$APP_DIR/compose_config_template/nginx/nginx.conf" "$APP_DIR/compose_build/compose/nginx/nginx.conf"
+
+# 删除 compose_build 目录下的 .git 目录，避免保留 git 历史记录
+rm -rf "$APP_DIR/compose_build/.git"
 
 echo "===================="
 echo "building docker compose"
