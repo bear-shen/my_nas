@@ -49,8 +49,10 @@ if [[ "$INTEGRATE_ONLYOFFICE" == "y" ]]; then
   echo "OnlyOffice JWT secret: $ONLYOFFICE_JWT_SECRET"
 fi
 
-read -rp "are these correct? (y/n): " CONFIRM
-if [[ "$CONFIRM" != "y" && "$CONFIRM" != "Y" ]]; then
+read -rp "are these correct? (y/n) (default y): " CONFIRM
+CONFIRM=${CONFIRM:-y}
+CONFIRM=$(echo "$CONFIRM" | tr '[:upper:]' '[:lower:]')
+if [[ "$CONFIRM" != "y" ]]; then
   echo "installation aborted."
   exit 1
 fi

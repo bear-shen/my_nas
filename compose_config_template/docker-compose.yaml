@@ -14,10 +14,9 @@ services:
       - ./php:/etc/php/8.3
       - ./supervisor:/etc/supervisor
       - ./crontab:/etc/cron.d
-      - ./start.sh:/myDocker/start.sh
-      # 注意compose的init.sh和docker的init.sh路径一致，会覆盖
-      - ./init.sh:/myDocker/init.sh
-    command: ["/bin/bash", "/myDocker/start.sh"]
+      - ./start.sh:/myCompose/start.sh
+      - ./init.sh:/myCompose/init.sh
+    command: ["/bin/bash", "/myCompose/start.sh"]
     restart: unless-stopped
     environment:
       POSTGRES_PASSWORD: {{POSTGRES_PASSWORD}}

@@ -2,9 +2,9 @@
 set -euo pipefail
 
 #如果根目录不存在.docker_initialized文件，则执行init.sh
-if [ ! -f "/.docker_initialized" ]; then
-  /usr/bin/env bash /myDocker/init.sh
-  touch "/.docker_initialized"
+if [ ! -f "/.compose_initialized" ]; then
+  /usr/bin/env bash /myCompose/init.sh
+  touch "/.compose_initialized"
 fi
 
 # 启动服务
